@@ -5,6 +5,8 @@ export const BRAND_MENU_ITEMS: Item[] = [
   { name: 'Arnold Rak', value: 'arnoldRak' },
   { name: 'Raychem', value: 'raychem' },
   { name: 'Nexans', value: 'nexans' },
+  { name: 'Теплотекс', value: 'teplotext' },
+  { name: 'Terneo', value: 'terneo' },
 ];
 
 export const KEY_TYPE_MENU_ITEMS: Item[] = [
