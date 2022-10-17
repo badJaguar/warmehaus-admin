@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { ColNames, Floor } from '../table/TableComponent';
 import { useUpdateFloor } from '../api/hooks';
 import BasicSelect from './basic-select';
-import { BRAND_MENU_ITEMS, KEY_TYPE_MENU_ITEMS } from './create-modal';
+import { BRAND_MENU_ITEMS, KEY_TYPE_MENU_ITEMS } from '../utils/constants';
 
 const style = {
   position: 'absolute' as 'absolute',

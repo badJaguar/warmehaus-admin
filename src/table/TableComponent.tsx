@@ -9,13 +9,19 @@ import Paper from '@mui/material/Paper';
 import {
   useQuery,
 } from '@tanstack/react-query'
-import axios, { AxiosError, AxiosResponse } from 'axios';
 import { Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditModal from '../modal/edit-modal';
 import CreateModal from '../modal/create-modal';
 import { useDeleteFloor } from '../api/hooks';
+import { getFloorsByBrand } from '../api/axios-functions';
+import BasicSelect from '../modal/basic-select';
+import { Box } from '@mui/system';
+import Typography from '@mui/material/Typography';
+import { BRAND_MENU_ITEMS, KEY_TYPE_MENU_ITEMS } from '../utils/constants';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export interface Floor {
   id: string;
@@ -31,18 +37,6 @@ export interface ColNames extends Omit<Floor, 'id' | 'price' | 'brandKey' | 'typ
   price: string
 }
 
-export const getFloorsByBrand = async (brandKey?: string, typeKey?: string): Promise<Floor[]> => new Promise<Floor[]>(
-  (resolve, reject) => {
-    const mainUrl = "https://warmehouse-be.herokuapp.com/floors/filterByParams"
-    const brandQuery = brandKey ? `brandKey=${brandKey}` : ''
-    const typeQuery = typeKey ? `typeKey=${typeKey}` : ''
-
-    axios.get(`${mainUrl}?${brandQuery}&${typeQuery}`)
-      .then((response: AxiosResponse<any>) => resolve(response.data))
-      .catch((error: AxiosError<string>) => reject(error));
-  },
-);
-
 const colNames: ColNames = {
   brand: 'Бренд',
   description: "Тип",
@@ -51,13 +45,18 @@ const colNames: ColNames = {
 }
 
 export default function BasicTable() {
-  const {data} = useQuery(['floors'],() => getFloorsByBrand())
+  const { search } = useLocation();
+  const {data, isLoading} = useQuery(['floors', search],() => getFloorsByBrand(search))
 
   const {mutateAsync: deleteFloor} = useDeleteFloor()
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [editOpen, setEditOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [floor, setFloor] = useState<Floor | undefined>()
+  const [typeKeyValue, setTypeKeyValue] = useState(searchParams.get('typeKey') ?? '')
+  const [brandValue, setBrandValue] =  useState(searchParams.get('brandKey') ??'')
+
 
   const toggleEditModal = () => (floor: Floor) => {
     setEditOpen(val => !val)
@@ -80,9 +79,49 @@ export default function BasicTable() {
     setCreateOpen(false)
   }, [])
 
+  const onTypeKeyChange = (value: string) => {
+    setTypeKeyValue(value)
+    searchParams.set("typeKey", value);
+    setSearchParams(searchParams);
+    }
+
+    const onBrandChange = (value: string) => {
+      setBrandValue(value)
+      searchParams.set("brandKey", value);
+      setSearchParams(searchParams);
+    }
+
+    const dropParamsHandle = () => {
+      setTypeKeyValue('')
+      setSearchParams()
+      setBrandValue('')
+    }
+
+    if (isLoading) {
+      return <CircularProgress />
+    }
+
   return (
     <TableContainer component={Paper}>
       <Button sx={{ m: 6, mt: 1, ml:1 }} variant='contained' onClick={toggleCreateModal}>Создать Новый</Button>
+      <Box sx={{ pb:3}}>
+        <Typography sx={{ pb:3 }} variant='h3'>Фильтры:</Typography>
+        <Box sx={{display: 'flex'}}>
+          <BasicSelect
+          title={'По типу'}
+          value={typeKeyValue}
+          menuItems={KEY_TYPE_MENU_ITEMS}
+          onChange={onTypeKeyChange}
+        />
+        <BasicSelect
+          title={'По бренду'}
+          value={brandValue}
+          menuItems={BRAND_MENU_ITEMS}
+          onChange={onBrandChange}
+        />
+        <Button sx={{ml: 6}} variant='contained' onClick={dropParamsHandle}>Сбросить</Button>
+          </Box>
+      </Box>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -94,7 +133,7 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.map((row: Floor) => (
+          {data?.length ? data.map((row: Floor) => (
             <TableRow
               key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -114,7 +153,9 @@ export default function BasicTable() {
                 </IconButton>
               </TableCell>
             </TableRow>
-          ))}
+          )): 
+          <Typography variant='h2'>Нет данных</Typography>
+        }
         </TableBody>
       </Table>
       <EditModal

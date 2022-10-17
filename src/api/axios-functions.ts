@@ -1,5 +1,16 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { CreateFloorDto } from "../modal/create-modal";
+import { Floor } from "../table/TableComponent";
+
+export const getFloorsByBrand = async (query?: string): Promise<Floor[]> => new Promise<Floor[]>(
+  (resolve, reject) => {
+    const mainUrl = "https://warmehouse-be.herokuapp.com/floors/filterByParams";
+
+    axios.get(`${mainUrl}${query}`)
+      .then((response: AxiosResponse<any>) => resolve(response.data))
+      .catch((error: AxiosError<string>) => reject(error));
+  },
+);
 
 export const createFloor = async (
   floor: CreateFloorDto,

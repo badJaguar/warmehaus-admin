@@ -6,8 +6,9 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { ColNames } from '../table/TableComponent';
-import BasicSelect, { Item } from './basic-select';
+import BasicSelect from './basic-select';
 import { useCreateFloor } from '../api/hooks';
+import { BRAND_MENU_ITEMS, KEY_TYPE_MENU_ITEMS } from '../utils/constants';
 
 export interface CreateFloorDto {
   description: string;
@@ -35,21 +36,6 @@ interface CreateModalProps {
   toggleModal: VoidFunction
   colNames: ColNames
 }
-
-export const BRAND_MENU_ITEMS: Item[] = [
-  {name: 'Warmehaus', value: 'warmehaus'},
-  {name: 'Arnold Rak', value: 'arnoldRak'},
-  {name: 'Raychem', value: 'raychem'},
-  {name: 'Nexans', value: 'nexans'},
-]
-
-export const KEY_TYPE_MENU_ITEMS: Item[] = [
-  {name: 'Маты', value: 'mats'},
-  {name: 'Кабель', value: 'cable'},
-  {name: 'Плёнка', value: 'film'},
-  {name: 'Регулятор', value: 'regulator'},
-  {name: 'Антиоблединение', value: 'antiicing'},
-]
 
 const CreateModal = (props: CreateModalProps) => {
 const {open, toggleModal, colNames} = props;
