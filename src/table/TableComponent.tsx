@@ -33,12 +33,13 @@ export interface Floor {
   price: number;
 }
 
-export interface ColNames extends Omit<Floor, 'id' | 'price' | 'brandKey' | 'typeKey'> {
+export interface ColNames extends Omit<Floor, 'id' | 'price' | 'brandKey'> {
   price: string
 }
 
 const colNames: ColNames = {
   brand: 'Бренд',
+  typeKey: 'Структура',
   description: "Тип",
   nominal: 'Номинал',
   price: 'Цена'
@@ -126,6 +127,7 @@ export default function BasicTable() {
         <TableHead>
           <TableRow>
             <TableCell>{colNames.brand}</TableCell>
+            <TableCell>{colNames.typeKey}</TableCell>
             <TableCell>{colNames.description}</TableCell>
             <TableCell>{colNames.nominal}</TableCell>
             <TableCell>{colNames.price}</TableCell>
@@ -141,6 +143,7 @@ export default function BasicTable() {
               <TableCell component="th" scope="row">
                 {row.brand}
               </TableCell>
+              <TableCell align="left">{KEY_TYPE_MENU_ITEMS.find(i => i.value === row.typeKey)?.name}</TableCell>
               <TableCell align="left">{row.description}</TableCell>
               <TableCell align="left">{row.nominal}</TableCell>
               <TableCell align="left">{row.price}</TableCell>

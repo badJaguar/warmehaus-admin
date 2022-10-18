@@ -85,6 +85,7 @@ if (floor) {
   setNominal(floor.nominal)
   setDescriptionName(floor.description)
   setPrice(floor.price)
+  setTypeKeyValue(floor.typeKey)
  }
  }, [floor])
 
