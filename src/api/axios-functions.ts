@@ -4,7 +4,7 @@ import { Floor } from "../table/TableComponent";
 
 export const getFloorsByBrand = async (query?: string): Promise<Floor[]> => new Promise<Floor[]>(
   (resolve, reject) => {
-    const mainUrl = "https://warmehouse-be.vercel.app/floors/filterByParams";
+    const mainUrl = "https://warmehaus-be.vercel.app/floors/filterByParams";
 
     axios.get(`${mainUrl}${query}`)
       .then((response: AxiosResponse<any>) => resolve(response.data))
@@ -16,7 +16,7 @@ export const createFloor = async (
   floor: CreateFloorDto,
 ): Promise<CreateFloorDto> => new Promise<CreateFloorDto>(
   (resolve, reject) => {
-    axios.post<CreateFloorDto>('https://warmehouse-be.vercel.app/floors/floor', floor, {
+    axios.post<CreateFloorDto>('https://warmehaus-be.vercel.app/floors/floor', floor, {
       headers: {
         'X-API-KEY': sessionStorage.getItem('login')
       }
@@ -30,7 +30,7 @@ export const deleteFloor = async (
   id: string,
 ) => new Promise<any>(
   (resolve, reject) => {
-    axios.delete(`https://warmehouse-be.vercel.app/floors/${id}`, {
+    axios.delete(`https://warmehaus-be.vercel.app/floors/${id}`, {
       headers: {
         'X-API-KEY': sessionStorage.getItem('login')
       }
@@ -45,7 +45,7 @@ export const patchFloor = async (
   floor: CreateFloorDto,
 ) => new Promise<any>(
   (resolve, reject) => {
-    axios.patch(`https://warmehouse-be.vercel.app/floors/${id}`, floor, {
+    axios.patch(`https://warmehaus-be.vercel.app/floors/${id}`, floor, {
       headers: {
         'X-API-KEY': sessionStorage.getItem('login')
       }
